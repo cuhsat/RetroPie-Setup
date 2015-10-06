@@ -232,6 +232,14 @@ function main_menu() {
             [[ -n "$fb_def_rom" ]] && options+=(13 "Remove framebuffer res choice for $emulator + rom")
         fi
 
+        # multitap support is only available for lr-snes9x-next
+        if [[ "$system" == "snes" ]]; then
+            options+=(
+                14 "Enable support for Hudson Soft's Super Multitap"
+                15 "Remove support for Hudson Soft's Super Multitap"
+            )
+        fi
+
         options+=(X "Launch")
         options+=(Q "Exit (without launching)")
 
@@ -297,6 +305,12 @@ function main_menu() {
             13)
                 sed -i "/$fb_save_rom/d" "$video_conf"
                 load_mode_defaults
+                ;;
+            14)
+                enable_multitap
+                ;;
+            15)
+                remove_multitap
                 ;;
             Z)
                 netplay=1
@@ -590,6 +604,27 @@ function restore_governor() {
     for cpu in /sys/devices/system/cpu/cpu[0-9]*/cpufreq/scaling_governor; do
         echo "${governor_old[$i]}" | sudo tee "$cpu" >/dev/null
         ((i++))
+    done
+}
+
+function enable_multitap() {
+    local conf="$configdir/snes/retroarch.cfg"
+    sed -i -r 's/\s*(input_libretro_device_p2).*/\1 = "257"/g' "$conf"
+
+    grep 'input_libretro_device_p2 = "257"' "$conf" >/dev/null || echo 'input_libretro_device_p2 = "257"' >> "$conf"
+
+    for i in 1 3 4 5 6 7 8 9; do
+        sed -i -r "s/\s*(input_libretro_device_p$i).*/\1 = \"5\"/g" "$conf"
+        grep "input_libretro_device_p$i = \"5\"" "$conf" >/dev/null || echo "input_libretro_device_p$i = \"5\"" >> "$conf"
+    done
+}
+
+function remove_multitap() {
+    local conf="$configdir/snes/retroarch.cfg"
+    sed -i -r '/\s*input_libretro_device_p2\s*=\s*"257"/d' "$conf"
+
+    for i in 1 3 4 5 6 7 8 9; do
+        sed -r -i "/\s*input_libretro_device_p$i\s*=\s*\"5\"/d" "$conf"
     done
 }
 
