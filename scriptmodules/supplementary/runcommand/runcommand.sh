@@ -235,8 +235,8 @@ function main_menu() {
         # multitap support is only available for lr-snes9x-next
         if [[ "$system" == "snes" ]]; then
             options+=(
-                14 "Enable support for Hudson Soft's Super Multitap"
-                15 "Remove support for Hudson Soft's Super Multitap"
+                M "Enable Hudson Soft's Super Multitap support"
+                N "Remove Hudson Soft's Super Multitap support"
             )
         fi
 
@@ -306,10 +306,10 @@ function main_menu() {
                 sed -i "/$fb_save_rom/d" "$video_conf"
                 load_mode_defaults
                 ;;
-            14)
+            M)
                 enable_multitap
                 ;;
-            15)
+            N)
                 remove_multitap
                 ;;
             Z)
