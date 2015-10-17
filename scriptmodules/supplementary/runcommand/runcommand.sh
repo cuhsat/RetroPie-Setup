@@ -501,6 +501,10 @@ function restore_fb() {
     switch_fb_res "${mode_orig[2]}x${mode_orig[3]}"
 }
 
+function clear_fb() {
+    dd if=/dev/zero of=/dev/fb0
+}
+
 function config_dispmanx() {
     local name="$1"
     # if we have a dispmanx conf file and $name is in it (as a variable) and set to 1,
@@ -711,6 +715,7 @@ if [[ -n $__joy2key_pid ]]; then
 fi
 
 if [[ $dont_launch -eq 1 ]]; then
+    clear_fb
     exit 0
 fi
 
@@ -739,5 +744,6 @@ fi
 
 # reset/restore framebuffer res
 restore_fb
+clear_fb
 
 exit 0
