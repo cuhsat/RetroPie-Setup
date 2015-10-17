@@ -221,7 +221,6 @@ function main_menu() {
         if [[ "$command" =~ retroarch ]]; then
             options+=(
                 8 "Select RetroArch render res for $emulator ($render_res)"
-                9 "Edit custom RetroArch config for this rom"
             )
         else
             options+=(
@@ -282,13 +281,6 @@ function main_menu() {
                 ;;
             8)
                 choose_render_res "$save_emu_render"
-                ;;
-            9)
-                touch "$rom.cfg"
-                cmd=(dialog --editbox "$rom.cfg" 22 76)
-                choice=$("${cmd[@]}" 2>&1 >/dev/tty)
-                [[ -n "$choice" ]] && echo "$choice" >"$rom.cfg"
-                [[ ! -s "$rom.cfg" ]] && rm "$rom.cfg"
                 ;;
             10)
                 choose_fb_res "$fb_save_emu" "$fb_def_emu"
