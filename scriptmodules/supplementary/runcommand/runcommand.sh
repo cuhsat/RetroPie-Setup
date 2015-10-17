@@ -724,7 +724,9 @@ config_dispmanx "$save_emu"
 retroarch_append_config
 
 # run command
+clear_fb
 eval $command </dev/tty 2>/tmp/runcommand.log
+clear_fb
 
 # restore default cpu scaling governor
 [[ -n "$governor" ]] && restore_governor
